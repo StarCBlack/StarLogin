@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'com.github.starcblack.login'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    flatDir { dirs "$rootProject.projectDir/libs" }
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly name: 'spigot-1.8.8-R0.1-SNAPSHOT-latest'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+    implementation 'org.mindrot:jbcrypt:0.4'
+}
+shadowJar {
+    archiveBaseName = 'StarLogin' // Nome base do arquivo JAR (sem a versão)
+    version = '0.0.1'       // Versão do seu plugin
+
+    // Configuração do local de saída (pasta build/libs no exemplo)
+    destinationDirectory = file("C:/Users/User/Desktop/Archives/minecraft-servers/Styria/plugins")
+}
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    sourceCompatibility('1.8')
+    targetCompatibility('1.8')
+}
