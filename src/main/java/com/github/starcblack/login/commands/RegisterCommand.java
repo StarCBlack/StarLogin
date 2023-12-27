@@ -4,7 +4,6 @@ import com.github.starcblack.login.manager.LoginManager;
 import com.github.starcblack.login.misc.utils.ActionBarAPI;
 import com.github.starcblack.login.user.User;
 import com.github.starcblack.login.user.dao.UserDao;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +30,6 @@ public class RegisterCommand implements CommandExecutor {
             return true;
         }
 
-        // Verifica se o comando foi usado corretamente
         if (args.length != 1) {
             player.sendMessage("§cUso correto: /register <senha>");
             return true;

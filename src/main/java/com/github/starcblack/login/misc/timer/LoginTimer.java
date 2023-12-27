@@ -1,6 +1,5 @@
 package com.github.starcblack.login.misc.timer;
 
-import com.github.starcblack.login.StarLogin;
 import com.github.starcblack.login.manager.LoginManager;
 import com.github.starcblack.login.misc.utils.ActionBarAPI;
 import com.github.starcblack.login.user.dao.UserDao;
@@ -10,16 +9,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class LoginTimer {
 
-    private final LoginManager loginManager;
-    private final Player player;
     private final int LOGIN_TIMEOUT;
 
     private final BukkitRunnable task;
     private final UserDao userDao;
 
     public LoginTimer(LoginManager loginManager, Player player, int loginTimeout) {
-        this.loginManager = loginManager;
-        this.player = player;
         LOGIN_TIMEOUT = loginTimeout;
         this.userDao = new UserDao();
 

@@ -2,7 +2,6 @@ package com.github.starcblack.login.commands;
 
 import com.github.starcblack.login.manager.LoginManager;
 import com.github.starcblack.login.user.dao.UserDao;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

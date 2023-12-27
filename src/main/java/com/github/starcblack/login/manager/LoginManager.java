@@ -18,10 +18,6 @@ public class LoginManager {
 
     private final Map<Player, Integer> loginAttempts = new HashMap<>();
 
-
-    private void LoginCommand() {
-    }
-
     public boolean isUserAuthenticated(Player player) {
         return !authenticationQueue.contains(player);
     }
