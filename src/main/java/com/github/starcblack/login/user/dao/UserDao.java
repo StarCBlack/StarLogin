@@ -1,6 +1,6 @@
 package com.github.starcblack.login.user.dao;
 
-import com.github.starcblack.login.database.DatabaseConnector;
+import com.github.starcblack.login.misc.database.DatabaseConnector;
 import com.github.starcblack.login.user.User;
 import org.mindrot.jbcrypt.BCrypt;
 

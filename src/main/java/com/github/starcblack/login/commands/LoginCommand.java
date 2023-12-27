@@ -1,6 +1,7 @@
 package com.github.starcblack.login.commands;
 
 import com.github.starcblack.login.manager.LoginManager;
+import com.github.starcblack.login.misc.utils.ActionBarAPI;
 import com.github.starcblack.login.user.dao.UserDao;
 import org.mindrot.jbcrypt.BCrypt;
 import org.bukkit.command.Command;
@@ -8,9 +9,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.swing.*;
+
 public class LoginCommand implements CommandExecutor {
 
     private final LoginManager loginManager = LoginManager.getInstance();
+    private final int MAX_LOGIN_ATTEMPTS =  3;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -45,9 +49,16 @@ public class LoginCommand implements CommandExecutor {
         if (userDao.checkPassword(player.getName(), password)) {
             // Remova o jogador da fila de autenticação
             loginManager.removeAuthenticationQueue(player);
-            player.sendMessage("§aLogin realizado com sucesso!");
+            player.setWalkSpeed(0.2F);
+            player.sendMessage("§eLogin realizado com sucesso, obrigado por entrar em nosso servidor!");
+            ActionBarAPI.sendActionBar(player, "§aLogin realizado com sucesso , §lPARABÉNS!");
         } else {
-            player.sendMessage("§cSenha incorreta. Tente novamente.");
+            int attempts = loginManager.incrementLoginAttempts(player);
+            if (attempts >= MAX_LOGIN_ATTEMPTS) {
+                player.kickPlayer("§cSTARLOGIN\n\n§cA senha está incorreta!\n §cVocê excedeu o número máximo de tentativas - (3/3)");
+            } else {
+                player.sendMessage("§cSenha incorreta. Tentativa (" + attempts + "/" + MAX_LOGIN_ATTEMPTS + "). Tente novamente.");
+            }
         }
         return true;
     }

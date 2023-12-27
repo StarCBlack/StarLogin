@@ -1,6 +1,7 @@
 package com.github.starcblack.login.commands;
 
 import com.github.starcblack.login.manager.LoginManager;
+import com.github.starcblack.login.misc.utils.ActionBarAPI;
 import com.github.starcblack.login.user.User;
 import com.github.starcblack.login.user.dao.UserDao;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -45,7 +46,11 @@ public class RegisterCommand implements CommandExecutor {
         // Remova o jogador da fila de autenticação
         loginManager.removeAuthenticationQueue(player);
 
-        player.sendMessage("§aRegistro realizado com sucesso!");
+        player.setWalkSpeed(0.2F);
+        player.sendMessage("§eSeu registro foi finalizado com sucesso!");
+
+        ActionBarAPI.sendActionBar(player, "§aRegistro realizado com sucesso , §lPARABÉNS!");
+
         return true;
     }
 }

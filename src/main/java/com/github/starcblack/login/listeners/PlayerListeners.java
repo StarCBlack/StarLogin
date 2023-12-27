@@ -2,11 +2,12 @@ package com.github.starcblack.login.listeners;
 
 import com.github.starcblack.login.StarLogin;
 import com.github.starcblack.login.manager.LoginManager;
-import com.github.starcblack.login.user.User;
+import com.github.starcblack.login.misc.timer.LoginTimer;
 import com.github.starcblack.login.user.dao.UserDao;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -15,11 +16,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.permissions.PermissionAttachment;
 
 public class PlayerListeners implements Listener {
 
     private final LoginManager loginManager = LoginManager.getInstance();
+
     private final String MESSAGE = "§cPara executar essa ação, você deve estar logado no servidor!";
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -27,11 +28,17 @@ public class PlayerListeners implements Listener {
         // Adiciona o jogador à fila de autenticação ao entrar
         loginManager.addAuthenticationQueue(player);
 
+        LoginTimer loginTimer = new LoginTimer(loginManager, player, 60);
+        loginTimer.start(StarLogin.getInstance());
+
         UserDao userDao = new UserDao();
         if (!userDao.isUserRegistered(player.getName())) {
             player.sendMessage("§aDigite o comando /register <senha> para se registrar no servidor");
+            player.sendTitle("§c§lSTARLOGIN", "§7UTILIZE: /register <senha>");
         } else {
             player.sendMessage("§aDigite o comando /login <senha> para se logar no servidor");
+            player.sendTitle("§c§lSTARLOGIN", "§7UTILIZE: /login <senha>");
+
         }
     }
 
@@ -40,6 +47,7 @@ public class PlayerListeners implements Listener {
         Player player = event.getPlayer();
         // Remove o jogador da fila de autenticação ao desconectar
         loginManager.removeAuthenticationQueue(player);
+        //CaptchaManager.getCaptchaMap().remove(player.getUniqueId());
         if(loginManager.getAuthenticationQueue().isEmpty()) {
             System.out.println("Não existe nenhum usuário em processo de auteticação!");
         }
@@ -119,14 +127,34 @@ public class PlayerListeners implements Listener {
         }
     }
 
-
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent e) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMove(PlayerMoveEvent e) {
         Player player = e.getPlayer();
-        if (loginManager.getAuthenticationQueue().contains(player)
-                && (e.getFrom().getX() != e.getTo().getX() || e.getFrom().getZ() != e.getTo().getZ())) {
-            e.setCancelled(true);
+        if (!loginManager.isUserAuthenticated(player)) {
+            Location from = e.getFrom();
+            Location to = e.getTo();
+            if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
+                e.setTo(from);
+            }
         }
+    }
+    @EventHandler
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent e) {
+        Player player = e.getPlayer();
+
+        if (loginManager.getAuthenticationQueue().contains(player)) {
+            e.setCancelled(true);
+            player.setAllowFlight(false);
+            player.setFlying(false);
+        }
+    }
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (loginManager.getAuthenticationQueue().contains(player)) {
+            event.setCancelled(true);
+
+        }
+
     }
 }

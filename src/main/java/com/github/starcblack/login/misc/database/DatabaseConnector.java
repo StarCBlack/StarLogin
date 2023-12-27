@@ -1,4 +1,4 @@
-package com.github.starcblack.login.database;
+package com.github.starcblack.login.misc.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

@@ -3,7 +3,7 @@ package com.github.starcblack.login;
 import com.github.starcblack.login.commands.ChangePasswordCommand;
 import com.github.starcblack.login.commands.LoginCommand;
 import com.github.starcblack.login.commands.RegisterCommand;
-import com.github.starcblack.login.database.DatabaseConnector;
+import com.github.starcblack.login.misc.database.DatabaseConnector;
 import com.github.starcblack.login.listeners.PlayerListeners;
 import com.github.starcblack.login.user.dao.UserDao;
 import lombok.Getter;
@@ -15,13 +15,12 @@ public class StarLogin extends JavaPlugin {
 
     @Getter
     public static StarLogin instance;
-    UserDao userDao = new UserDao();
 
     @Override
     public void onEnable() {
+        instance = this;
         saveDefaultConfig();
-        DatabaseConnector.initialize(this);
-        userDao = new UserDao();
+
         getServer().getScheduler().runTaskAsynchronously(this, this::loadMySQL);
         getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
 
@@ -39,14 +38,18 @@ public class StarLogin extends JavaPlugin {
             getLogger().info("§a[StarLogin] - Desligado com sucesso!");
         }
     }
+
     private void loadMySQL() {
+        UserDao userDao = new UserDao();
         try {
+            DatabaseConnector.initialize(instance);
             userDao.createTableIfNotExists();
             getLogger().info("§a[StarLogin] - O banco de dados foi iniciado com sucesso!");
         } catch (Exception e) {
             getLogger().severe("§c[StarLogin] - Não foi possível criar o banco de dados: " + e.getMessage());
         }
     }
+
     private void closeConnection() {
         try {
             DatabaseConnector.closeConnection();
