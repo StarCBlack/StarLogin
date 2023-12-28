@@ -1,7 +1,7 @@
 name: StarLogin
 author: STAR
 main: com.github.starcblack.login.StarLogin
-version: 1.0.0
+version: 0.3.0
 commands:
   login:
   register:

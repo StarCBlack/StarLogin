@@ -4,6 +4,7 @@ import com.github.starcblack.login.StarLogin;
 import com.github.starcblack.login.manager.LoginManager;
 import com.github.starcblack.login.misc.timer.LoginTimer;
 import com.github.starcblack.login.user.dao.UserDao;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,36 +22,30 @@ public class PlayerListeners implements Listener {
 
     private final LoginManager loginManager = LoginManager.getInstance();
 
-    private final String MESSAGE = "§cPara executar essa ação, você deve estar logado no servidor!";
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         // Adiciona o jogador à fila de autenticação ao entrar
         loginManager.addAuthenticationQueue(player);
 
-        LoginTimer loginTimer = new LoginTimer(loginManager, player, 60);
+        LoginTimer loginTimer = new LoginTimer(loginManager, player, StarLogin.getInstance().getConfig().getInt("settings.loginTimeout"));
         loginTimer.start(StarLogin.getInstance());
 
         UserDao userDao = new UserDao();
         if (!userDao.isUserRegistered(player.getName())) {
-            player.sendMessage("§aDigite o comando /register <senha> para se registrar no servidor");
-            player.sendTitle("§c§lSTARLOGIN", "§7UTILIZE: /register <senha>");
+            player.sendMessage(getConfigMessage("messages.events.playerJoin.notRegistered"));
+            player.sendTitle(getConfigMessage("messages.events.playerJoin.title"), getConfigMessage("messages.playerJoin.events.registerCommand"));
         } else {
-            player.sendMessage("§aDigite o comando /login <senha> para se logar no servidor");
-            player.sendTitle("§c§lSTARLOGIN", "§7UTILIZE: /login <senha>");
-
+            player.sendMessage(getConfigMessage("messages.events.playerJoin.notAuthenticated"));
+            player.sendTitle(getConfigMessage("messages.events.playerJoin.title"), getConfigMessage("messages.events.playerJoin.loginCommand"));
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        // Remove o jogador da fila de autenticação ao desconectar
         loginManager.removeAuthenticationQueue(player);
-        //CaptchaManager.getCaptchaMap().remove(player.getUniqueId());
-        if(loginManager.getAuthenticationQueue().isEmpty()) {
-            System.out.println("Não existe nenhum usuário em processo de auteticação!");
-        }
     }
     @EventHandler
     public void onPlayerPlaceBlockEvent(BlockPlaceEvent event) {
@@ -106,7 +101,6 @@ public class PlayerListeners implements Listener {
         Player player = event.getPlayer();
         if (loginManager.getAuthenticationQueue().contains(player)) {
             event.setCancelled(true);
-            player.sendMessage(MESSAGE);
         }
     }
 
@@ -156,5 +150,8 @@ public class PlayerListeners implements Listener {
 
         }
 
+    }
+    private String getConfigMessage(String path) {
+        return ChatColor.translateAlternateColorCodes('&', StarLogin.getInstance().getConfig().getString(path, ""));
     }
 }

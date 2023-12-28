@@ -1,5 +1,6 @@
 package com.github.starcblack.login.commands;
 
+import com.github.starcblack.login.StarLogin;
 import com.github.starcblack.login.manager.LoginManager;
 import com.github.starcblack.login.misc.utils.ActionBarAPI;
 import com.github.starcblack.login.user.User;
@@ -13,12 +14,12 @@ import org.mindrot.jbcrypt.BCrypt;
 public class RegisterCommand implements CommandExecutor {
 
     private final LoginManager loginManager = LoginManager.getInstance();
+    private final UserDao userDao = new UserDao();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        UserDao userDao = new UserDao();
         if (!(sender instanceof Player)) {
-            sender.sendMessage("§cEste comando só pode ser executado por jogadores.");
+            sender.sendMessage(StarLogin.getInstance().getConfig().getString("messages.global.playerOnly"));
             return true;
         }
 
@@ -26,12 +27,12 @@ public class RegisterCommand implements CommandExecutor {
 
         // Verifica se o jogador já está registrado
         if (userDao.isUserRegistered(player.getName())) {
-            player.sendMessage("§cVocê já está registrado no servidor.");
+            player.sendMessage(StarLogin.getInstance().getConfig().getString("messages.commands.registerCommand.alreadyRegistered"));
             return true;
         }
 
         if (args.length != 1) {
-            player.sendMessage("§cUso correto: /register <senha>");
+            player.sendMessage(StarLogin.getInstance().getConfig().getString("messages.commands.registerCommand.incorrectUsage"));
             return true;
         }
 
@@ -45,9 +46,9 @@ public class RegisterCommand implements CommandExecutor {
         loginManager.removeAuthenticationQueue(player);
 
         player.setWalkSpeed(0.2F);
-        player.sendMessage("§eSeu registro foi finalizado com sucesso!");
+        player.sendMessage(StarLogin.getInstance().getConfig().getString("messages.commands.registerCommand.successfulRegistration"));
 
-        ActionBarAPI.sendActionBar(player, "§aRegistro realizado com sucesso , §lPARABÉNS!");
+        ActionBarAPI.sendActionBar(player, StarLogin.getInstance().getConfig().getString("messages.commands.registerCommand.successfulRegistrationActionBar"));
 
         return true;
     }

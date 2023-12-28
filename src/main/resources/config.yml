@@ -5,3 +5,45 @@ database:
   password: ""
   maxPoolSize: 10
   connectionTimeout: 5000
+
+settings:
+  loginTimeout: 60 #Esse valor é em segundos*
+
+messages:
+  loginTimer:
+    loginCountdown: "&c§lLOGIN: §cVocê tem §7[%SECONDS_LEFT%s] §cpara se logar!"
+    registrationCountdown: "&c§lREGISTRO: §cVocê tem §7[%SECONDS_LEFT%s] §cpara se registrar!"
+    timeoutKickMessage: "&c§lSTARLOGIN\n\n§cTempo de login expirado. Por favor, tente novamente."
+
+  global:
+    playerOnly: "&cEste comando só pode ser executado por jogadores."
+
+  events:
+    playerJoin:
+      notRegistered: "&aDigite o comando /register <senha> para se registrar no servidor"
+      notAuthenticated: "&aDigite o comando /login <senha> para se logar no servidor"
+      title: "&4&lSTARLOGIN"
+      registerCommand: "&8UTILIZE: /register <senha>"
+      loginCommand: "&8UTILIZE: /login <senha>"
+
+  commands:
+    changePasswordCommand:
+      notRegistered: "&cVocê precisa estar registrado para alterar a senha. Use /register primeiro."
+      notAuthenticated: "&cPara alterar a senha, você precisa estar logado!"
+      incorrectUsage: "&cUso correto: /changepassword <nova_senha>"
+      passwordChanged: "&aSenha alterada com sucesso!"
+
+    registerCommand:
+      alreadyRegistered: "&cVocê já está registrado no servidor."
+      incorrectUsage: "&cUso correto: /register <senha>"
+      successfulRegistration: "&eSeu registro foi finalizado com sucesso!"
+      successfulRegistrationActionBar: "&aRegistro realizado com sucesso , &lPARABÉNS!"
+
+    loginCommand:
+      alreadyAuthenticated: "&cVocê já está autenticado no servidor."
+      notRegistered: "&cVocê ainda não está registrado no servidor. Use /register para se registrar."
+      incorrectUsage: "&cUso correto: /login <senha>"
+      successfulLogin: "&eLogin realizado com sucesso, obrigado por entrar em nosso servidor!"
+      maxAttemptsExceeded: "&cA senha está incorreta!\n §cVocê excedeu o número máximo de tentativas - (3/3)"
+      incorrectPassword: "&cSenha incorreta. Tentativa (%ATTEMPS%/%MAX_LOGIN_ATTEMPTS%). Tente novamente."
+
